@@ -5,11 +5,22 @@ import {
   CommandBar,
   ICommandBarItemProps
 } from 'office-ui-fabric-react/lib/CommandBar';
+import { Dialog, DialogType, DialogFooter } from 'office-ui-fabric-react/lib/Dialog';
 import { initializeIcons } from '@uifabric/icons';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
+import { PrimaryButton, DefaultButton } from 'office-ui-fabric-react/lib/Button';
 initializeIcons();
-export class ImageExample extends React.Component<any, any> {
+
+
+export interface myState {
+    hideDialog: boolean;
+  }
+export class ImageExample extends React.Component<any, myState> {
+    public state: myState = {
+        hideDialog: true,
+      };
   public render() {
+    const { hideDialog } = this.state;
     const img = [
       { id: '1', src: 'https://picsum.photos/64/64/?image=0' },
       { id: '2', src: 'https://picsum.photos/64/64/?image=10' },
@@ -21,7 +32,7 @@ export class ImageExample extends React.Component<any, any> {
         text: 'New',
         cacheKey: 'myCacheKey', // changing this key will invalidate this item's cache
         iconProps: { iconName: 'Add' },
-        onClick: () => alert('Add')
+        onClick: this._showDialog
       },
       {
         key: 'download',
@@ -70,6 +81,26 @@ export class ImageExample extends React.Component<any, any> {
             })}
           </div>
         </div>
+        <Dialog
+        hidden={hideDialog}
+        onDismiss={this._closeDialog}
+        dialogContentProps={{
+            type: DialogType.normal,
+            title: 'Create image',
+            subText: 'Do you want to send this message without a subject?'
+          }}
+        modalProps={{
+            titleAriaId: 'Create image',
+            subtitleAriaId: '',
+            isBlocking: false,
+            styles: { main: { maxWidth: 450 } },
+          }}
+        >
+         <DialogFooter>
+            <PrimaryButton onClick={this._closeDialog} text="Add" />
+            <DefaultButton onClick={this._closeDialog} text="Cancel" />
+          </DialogFooter>
+        </Dialog>
       </div>
     );
   }
@@ -78,6 +109,14 @@ export class ImageExample extends React.Component<any, any> {
   public arrowLeft = () => {
         alert('left');
   }
+  private _showDialog = (): void => {
+    this.setState({ hideDialog: false });
+  };
+
+  private _closeDialog = (): void => {
+    this.setState({ hideDialog: true });
+  };
+
 }
 
 export default ImageExample;
